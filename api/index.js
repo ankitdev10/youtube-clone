@@ -6,7 +6,7 @@ import videoRoutes from "./routes/videos.js";
 import commentRoutes from "./routes/comments.js";
 import authRoutes from "./routes/auth.js";
 import cookieParser from "cookie-parser";
-
+import cors from "cors";
 // configuration
 const app = express();
 app.use(express.json());
@@ -20,7 +20,11 @@ mongoose
   .catch((err) => {
     console.log("Failed to connect database", err);
   });
-
+app.use(
+  cors({
+    origin: "*",
+  }),
+);
 // routes
 
 app.use("/api/auth", authRoutes);
