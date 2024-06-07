@@ -1,12 +1,11 @@
 import React, { useRef, useState } from "react";
 import styled from "styled-components";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import { loginStart, loginSuccess, loginFailure } from "../redux/userSlice";
 import { auth, provider } from "../firebase";
 import { signInWithPopup } from "firebase/auth";
-import {  useNavigate } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
+import { api } from "../axios";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -42,7 +41,6 @@ const Input = styled.input`
   background-color: transparent;
   width: 100%;
   color: ${({ theme }) => theme.text};
-
 `;
 
 const Button = styled.button`
@@ -71,10 +69,10 @@ const LinkItem = styled.span`
 `;
 
 const Error = styled.span`
-color: red;
-font-size: 14px;
-margin-top: 8px;
-`
+  color: red;
+  font-size: 14px;
+  margin-top: 8px;
+`;
 
 const Login = () => {
   const name = useRef();
@@ -90,8 +88,8 @@ const Login = () => {
     e.preventDefault();
     dispatch(loginStart());
     try {
-      setErr("")
-      const res = await axios.post("/auth/signin", {
+      setErr("");
+      const res = await api.post("/auth/signin", {
         name: name.current.value,
         password: password.current.value,
       });
@@ -99,9 +97,8 @@ const Login = () => {
       navigate("/");
     } catch (error) {
       dispatch(loginFailure());
-      setErr(error.response.data.message)
-      console.log(error.response.data.message)
-
+      setErr(error.response.data.message);
+      console.log(error.response.data.message);
     }
   };
 
@@ -109,7 +106,7 @@ const Login = () => {
 
   const signUp = async (e) => {
     e.preventDefault();
-    const res = await axios.post("/auth/signup", {
+    const res = await api.post("/auth/signup", {
       name: signupName.current.value,
       email: email.current.value,
       password: signupPassword.current.value,
@@ -120,7 +117,7 @@ const Login = () => {
     dispatch(loginStart());
     signInWithPopup(auth, provider)
       .then((result) => {
-        axios
+        api
           .post("/auth/google", {
             name: result.user.displayName,
             email: result.user.email,
@@ -129,7 +126,7 @@ const Login = () => {
           .then((res) => {
             dispatch(loginSuccess(res.data));
           });
-          navigate("/")
+        navigate("/");
       })
       .catch((error) => {
         dispatch(loginFailure());
@@ -162,9 +159,7 @@ const Login = () => {
           <LinkItem>Terms</LinkItem>
         </Links>
       </More>
-      {err.length >2 && (
-        <Error>{err}⛔</Error>
-      )}
+      {err.length > 2 && <Error>{err}⛔</Error>}
     </Container>
   );
 };

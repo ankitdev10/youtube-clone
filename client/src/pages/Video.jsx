@@ -13,8 +13,8 @@ import Comments from "../components/Comments";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import axios from "axios";
 import { format } from "timeago.js";
+import { api } from "../axios";
 import { fetchSuccess, like, dislike } from "../redux/videoSlice";
 import { subscription } from "../redux/userSlice";
 import Recomendation from "../components/Recomendation";
@@ -149,7 +149,7 @@ const Video = () => {
   useEffect(() => {
     const fetchVideo = async () => {
       try {
-        const video = await axios.get("/videos/find/" + path);
+        const video = await api.get("/videos/find/" + path);
         dispatch(fetchSuccess(video.data));
       } catch (error) {
         console.log(error);
@@ -161,7 +161,7 @@ const Video = () => {
   useEffect(() => {
     const fetchChanel = async () => {
       try {
-        const channel = await axios.get("/users/find/" + currentVideo.userId);
+        const channel = await api.get("/users/find/" + currentVideo.userId);
         setChannel(channel.data);
       } catch (error) {
         console.log(error);
@@ -174,7 +174,7 @@ const Video = () => {
     e.preventDefault();
     try {
       !currentUser && navigate("/signin");
-      await axios.put("/users/like/" + currentVideo._id);
+      await api.put("/users/like/" + currentVideo._id);
       dispatch(like(currentUser._id));
     } catch (error) {
       console.log(error);
@@ -185,7 +185,7 @@ const Video = () => {
     e.preventDefault();
     try {
       !currentUser && navigate("/signin");
-      await axios.put("/users/dislike/" + currentVideo._id);
+      await api.put("/users/dislike/" + currentVideo._id);
       dispatch(dislike(currentUser._id));
     } catch (error) {
       console.log(error);
@@ -197,8 +197,8 @@ const Video = () => {
     try {
       !currentUser && navigate("/signin");
       currentUser.subscribedUsers.includes(channel._id)
-        ? await axios.put("/users/unsub/" + channel._id)
-        : await axios.put("/users/sub/" + channel._id);
+        ? await api.put("/users/unsub/" + channel._id)
+        : await api.put("/users/sub/" + channel._id);
       dispatch(subscription(channel._id));
     } catch (error) {}
   };
@@ -206,7 +206,7 @@ const Video = () => {
   const handleDelete = async (e) => {
     e.preventDefault();
     try {
-      await axios.delete("/videos/" + currentVideo._id);
+      await api.delete("/videos/" + currentVideo._id);
       navigate("/");
     } catch (error) {}
   };

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import app from "../firebase";
 import styled from "styled-components";
-import axios from "axios";
+import { api } from "../axios";
 import {
   getStorage,
   ref,
@@ -52,7 +52,6 @@ const Input = styled.input`
   border-radius: 3px;
   padding: 10px;
   background: transparent;
-
 `;
 
 const Textarea = styled.textarea`
@@ -133,7 +132,7 @@ const Popup = ({ setOpen }) => {
             return { ...prev, [urlType]: downloadURL };
           });
         });
-      }
+      },
     );
   };
 
@@ -147,7 +146,7 @@ const Popup = ({ setOpen }) => {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    const res = await axios.post("/videos", { ...inputs, tags });
+    const res = await api.post("/videos", { ...inputs, tags });
     setOpen(false);
     res.status === 200 && navigate("/video/" + res.data._id);
   };

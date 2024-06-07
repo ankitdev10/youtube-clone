@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { format } from "timeago.js";
-import axios from "axios";
-
+import { api } from "../axios";
 const Container = styled.div`
   width: ${(props) => props.type !== "small" && "360px"};
   margin-bottom: ${(props) => (props.type === "small" ? "10px" : "45px")};
@@ -25,7 +24,6 @@ const Details = styled.div`
   margin-top: ${(props) => props.type !== "small" && "16px"};
   gap: 12px;
   flex: 1;
- 
 `;
 
 const ChannelImg = styled.img`
@@ -56,7 +54,7 @@ const Card = ({ type, video }) => {
 
   useEffect(() => {
     const fetchChannel = async () => {
-      const res = await axios.get(`/users/find/${video.userId}`);
+      const res = await api.get(`/users/find/${video.userId}`);
       getChannel(res.data);
     };
 
@@ -65,7 +63,7 @@ const Card = ({ type, video }) => {
 
   const addView = async () => {
     try {
-      await axios.put("/videos/view/" + video._id);
+      await api.put("/videos/view/" + video._id);
     } catch (error) {}
   };
 
