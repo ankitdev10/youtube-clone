@@ -16,7 +16,7 @@ const Home = ({ type }) => {
 
   useEffect(() => {
     const getRandomVideos = async () => {
-      const res = await api.get(`videos/${type}`);
+      const res = await api.get(`/videos/${type}`);
       setVideos(res.data);
     };
 
